@@ -1,0 +1,50 @@
+
+
+<div class="back1"></div>
+<div class="back2"></div>
+
+<div class="container" *ngIf="login; else register">
+      <form class="main" [ngStyle] = "{'width': leftchatcsschange ?'330px':''}" [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" >
+        <div class="innerbox" [ngStyle] = "{'width': leftchatcsschange ?'319px':''}">
+            <input type="email"formControlName="email"  placeholder="Enter Your email" #name />
+            <input type="password"formControlName="password"  placeholder="Enter Your password" #name />
+            <button type="submit">Login</button>
+            <p>OR</p>
+           
+            
+        </div>&nbsp;
+        <p style="margin-top: 66px;">not registered?</p>
+        <button (click) ="displayRegister()" >Register now</button>
+      </form>
+  
+</div>
+<div  [ngStyle]="{'width':'20%','margin-top':'-280px','padding-left':'27px','margin-left':googlebtnmobile?'28px':'40%','display':login?'block':'none'}" id="google-btn">
+
+</div>
+
+
+	<!-- <div class="container">
+		<h1>Welcome</h1>
+		
+		<form class="form">
+			<input type="text" placeholder="Username">
+			<input type="password" placeholder="Password">
+			<button type="submit" id="login-button">Login</button>
+		</form>
+	</div> -->
+  <ngx-spinner bdColor = "rgba(0, 0, 0, 0.6)" size = "medium" color = "#fff" type ="ball-scale-pulse" [fullScreen] = "true"><p style="color: white" ><img style="width: 150px; height: 150px;margin-top: -100px;" src="../../assets/whatsapp.gif" /> </p></ngx-spinner>
+
+
+<ng-template #register >
+    <form class="main" [ngStyle] = "{'width': leftchatcsschange ?'340px':''}" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()" >
+        <div class="innerbox" [ngStyle] = "{'width': leftchatcsschange ?'319px':''}">
+                <input type="text" formControlName="name"  placeholder="Enter Your Name" #name />
+                <input type="email"formControlName="email"  placeholder="Enter Your email" #name />
+                <input type="password" formControlName="password"  placeholder="Enter Your password" #name />
+                <input type="password" formControlName="confirmpassword"  placeholder="Enter Your password" #name />
+                <button type="submit">Register</button>
+        </div>&nbsp;
+        <p>Already registered?</p> <button (click) ="displayRegister()"> Login now </button>
+      </form>
+      
+</ng-template>

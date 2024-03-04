@@ -1,0 +1,207 @@
+
+<div class="back1"></div>
+<div class="back2"></div>
+<div class="row main" [ngStyle] = "{'height':leftchatcsschange?'91vh':''}">
+
+  <div class="col-4 left" [ngStyle] = "{'min-width': leftchatcsschange ? '-webkit-fill-available':'','display':clickforchat ?'none':'','height':leftchatcsschange?'91vh':''}" *ngIf="showallchatpage; else profilepage?profile:addchat">
+    <div class="first">
+      <div><span (click)="profileUpdate()" class="dp"><img style="margin-top: -13px; box-shadow: 0px 0px 4px rgb(83 80 80 / 82%);" class="circular--square" height="50px" width="50px" [src]="imgurl"/></span> 
+        
+
+        <div style="float: right; font-size: 20px; margin-top: 15px; margin-right: 20px; cursor: pointer;" class="dropdown">
+          <span class="threedot"><i (click)="Addchat()" class="bi bi-chat-left-text-fill"></i></span>&nbsp; &nbsp;
+          <span class="threedot"><i (click)="showdropdown()" class="bi bi-three-dots-vertical"></i></span>
+          <div *ngIf="showdrop;" class="dropdown-content">
+          <a (click)="logout()">Log out</a>
+          </div>
+        </div>
+      
+      </div>
+      <div class="second"><span><input [ngStyle] = "{'width': leftchatcsschange ?'259px':'','padding-left':leftchatcsschange ?'5px':'','font-size': '15px'}" class="search" (change)="filterchat($event)" [(ngModel)]="searchValue" placeholder="Type and click enter to filter the chat " type="text"/><span (click)="removefilter()"><img class="filter" src="../../assets/removefilter.png" /></span></span></div>
+      <div class="second" (click)="openarchieve()" >
+         <span class="archive"><i class="bi bi-archive "></i> &nbsp; &nbsp;<span style="margin-left: 20px; color: black; font-size: 18px;cursor: pointer;">Archived</span> </span>
+      </div>
+  <div class="friendschat" [ngStyle] = "{'height': leftchatcsschange ?'490px':''}" >
+<div *ngFor='let friend of friendsbackup'>
+      <div  [ngClass]="backstyle"  (click)="displayChatwithmessages(friend)">
+        
+        <img style="margin-top: -47px;
+        margin-left: 10px;
+        width: 52px;
+        height: 52px;" class="circular--square" [src]="friend.imgurl"/> 
+
+        
+        <div  class="nameandmsg">
+          <h6 >{{friend.name}}</h6>
+          <span ><i style="color: rgb(62, 181, 249);" *ngIf="!notclicked" class="bi bi-check-all"></i>Hi {{friend.name}}...</span>
+        </div>
+          
+    
+        <div *ngIf="notclicked;" style="float: right; font-size: 20px; margin-top: 12px; margin-right: 15px; cursor: pointer;" class="dropdown">
+          <h6 style="margin-right: 13px; margin-top: 6px; margin-bottom: -1px; color: #08d05f;">Today</h6>
+          <span class="newmsgcount"><i class="bi bi-1-circle-fill"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+      
+    </div>
+
+  </div>
+
+
+
+  <div [ngStyle] = "{'display': leftchatcsschange ?'none':''}"  class="col-8 right" *ngIf="showchat; else chat" >
+    <div class="first3">
+      
+    </div>
+    <div class="second1">
+      
+    </div>
+  
+  </div>
+</div>
+
+
+<ng-template #chat>
+  <div class="col-8 right1" [ngStyle] = "{'min-width': openchatcsschange ? '-webkit-fill-available':'',height:openchatcsschange?'91vh':''}" >
+ 
+      <div class="chatexpand"> 
+        <span *ngIf="openchatcsschange" (click)="closechat()" style="
+        color: black;
+        margin-top: 10px;
+        font-size: 28px;
+        padding-top: 12px;
+    " class="dp1"><i class="bi bi-arrow-left"></i></span>
+        <img class="circular--square chatimg" height="50px" width="50px" [src]="friendchatpic"/> <span style="
+        margin-left: 10px;
+"> {{displayname}}</span>
+        <div style="float: right; font-size: 20px; margin-top: 15px; margin-right: 20px; cursor: pointer;" class="dropdown">
+          <span class="threedot"><i (click)="showdropdownchat()" class="bi bi-three-dots-vertical"></i></span>
+          <div *ngIf="showdropchat;" class="dropdown-content">
+             <p (click)="closechat()">Close Chat</p>
+             <p (click)="deletechat()">Delete Chat</p>
+          </div>
+        </div>
+      </div>
+      <div class="chatbox" #chatelement>
+        
+        <div *ngFor="let msg of messageslist" [ngStyle] = "{'margin-left': openchatcsschange ? '-22px':''}"  class="msg">{{msg.message}}</div>
+       
+      </div>
+     
+  <div class="input-group mb-3 bottomchat">
+    <input [(ngModel)]="messagetxt" style="
+    width: 100%;
+    padding-left: 21px;
+    border-radius: 10px;
+    border: black;
+" #msg  type="text" placeholder="Type a message"/>
+    <div (click) ="sendmsg(msg.value)" class="input-group-append send" ><i class="bi bi-send-fill"></i></div>
+    <!-- <img width="30px" height="30px" [src]="sendicon"/> -->
+  </div>
+<!-- 
+  <div class="input-group mb-3 profilebackbut">
+    <input  #searchname placeholder="Enter User to Add" type="text" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+    <div class="input-group-append searchicon">
+      <i (click)="searchchat(searchname.value)" class="bi bi-search searchicon"></i>
+    </div>
+  </div> -->
+  
+    </div>
+ 
+
+  
+</ng-template>
+
+<ng-template  #profile>
+  <div *ngIf="!showarchieved; else archive" class="col-4 left1" [ngStyle] = "{'min-width': leftchatcsschange ?'-webkit-fill-available':''}">
+    <div class="first1">
+      <div class="profilebackbut"><span (click)="backtochat()" class="dp1"><i class="bi bi-arrow-left"></i></span> <p class="profile">Profile</p></div>
+      
+        
+      <div class="shadow" *ngIf="showpic; else upload"><img (mouseenter)="showUploadOption()" height="200px" width="200px" [src]="imgurl"/></div>
+      <!-- <div class="profilepic" *ngIf="showpic; else upload"><img class="circular--square" (mouseenter)="showUploadOption()" height="200px" width="200px" [src]="imgurl"/></div> -->
+      <input id="img" style="display: none; visibility: none;"  type="file" (change)="onSelectFile($event)">
+      <div class="third1">
+           Your Name <br/> 
+           
+           <div *ngIf="noedit; else edit">
+            <p class="inputname">{{Name}}</p>
+            <span style="float: right; margin-top: -35px; margin-right: 20px;cursor: pointer;" (click)="editName()"><i class="bi bi-pencil-fill"></i></span>
+           </div>
+
+          
+      </div>
+      <div class="third1" style="margin-top: 40px;">
+        About <br/> 
+        
+        <div *ngIf="noedit1; else edit1">
+         <p class="inputname">{{About}}</p>
+         <span style="float: right; margin-top: -35px; margin-right: 20px;cursor: pointer;" (click)="editAbout()"><i class="bi bi-pencil-fill"></i></span>
+        </div>
+
+       
+   </div>
+    </div>
+    
+  </div>
+</ng-template>
+<ng-template #edit class="input-group">
+  <input class="inputname" type="text" #name value="{{Name}}"/> 
+  <div class="input-group-btn">
+    <span style="font-size:26px;float: right; margin-top: -28px; margin-right: 20px;cursor: pointer;" (click)="editdone(name.value)"><i class="bi bi-check2"></i></span>
+   </div>
+
+</ng-template>
+
+<ng-template #edit1 class="input-group">
+  <input class="inputname" type="text" #about value="{{About}}"/> 
+  <div class="input-group-btn">
+    <span style="font-size:26px;float: right; margin-top: -28px; margin-right: 20px; cursor: pointer;" (click)="editAboutDone(about.value)"><i class="bi bi-check2"></i></span>
+   </div>
+
+</ng-template>
+
+<ng-template #upload>
+  <label class="upload" for="img"><img class="circular--square"  (mouseleave)="showUploadOption()" [src]="uploadimg"   height="200px" width="200px"></label>
+</ng-template>
+
+
+
+
+<ng-template #archive>
+  <div class="col-4 left1" [ngStyle] = "{'min-width': leftchatcsschange ?'-webkit-fill-available':''}">
+    <div class="first1">
+      <div class="profilebackbut"><span (click)="backtochat()" class="dp1"><i class="bi bi-arrow-left"></i></span> <p class="profile">Archived</p></div>    
+     <p class="text-center" style="margin-top: 30px;">No Archived Chats </p>
+    </div>
+    
+  </div>
+</ng-template>
+
+
+
+<ng-template  #addchat>
+  <div class="col-4 left1" [ngStyle] = "{'min-width': leftchatcsschange ?'-webkit-fill-available':''}">
+    <div class="first1">
+      
+      <!-- <div class="profilebackbut"><span><input class="searchchat" #searchname placeholder="Enter User to Add" type="text"/></span> <i (click)="searchchat(searchname.value)" class="bi bi-search searchicon"></i></div> -->
+      <p (click)="goback()"><i class="bi bi-arrow-left backarrow"></i></p>
+      <div class="input-group mb-3 profilebackbut">
+        <input  #searchname placeholder="Enter User to Add" type="text" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append searchicon">
+          <i (click)="searchchat(searchname.value)" class="bi bi-search searchicon"></i>
+        </div>
+      </div>
+      
+      
+      <div class="adduser" (click)="addUser()">
+        <span class="archive"><img style=" margin-left: 10px;" class="circular--square" height="50px" width="50px" [src]="resultdp"/>  &nbsp; &nbsp;<span  style="margin-left: 20px;margin-top: -8px; color: black; font-size: 18px;cursor: pointer;">{{resultForName}}</span> </span>
+     </div>
+    </div>
+    
+  </div>
+</ng-template>
+
+
