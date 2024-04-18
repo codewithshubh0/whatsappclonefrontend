@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations'; 
+import { DatePipe } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +29,7 @@ import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
   ],
   schemas:[NO_ERRORS_SCHEMA,CUSTOM_ELEMENTS_SCHEMA],
-  providers: [ChattingserviceService],
+  providers: [ChattingserviceService,DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { 

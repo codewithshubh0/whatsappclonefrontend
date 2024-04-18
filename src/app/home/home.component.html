@@ -1,11 +1,11 @@
 
 <div class="back1"></div>
 <div class="back2"></div>
-<div class="row main" [ngStyle] = "{'height':leftchatcsschange?'91vh':''}">
+<div class="row main" [ngStyle] = "{'height':leftchatcsschange?'91vh':'','margin':leftchatcsschange?'-130px 0px 0px 0px':''}">
 
   <div class="col-4 left" [ngStyle] = "{'min-width': leftchatcsschange ? '-webkit-fill-available':'','display':clickforchat ?'none':'','height':leftchatcsschange?'91vh':''}" *ngIf="showallchatpage; else profilepage?profile:addchat">
     <div class="first">
-      <div><span (click)="profileUpdate()" class="dp"><img style="margin-top: -13px; box-shadow: 0px 0px 4px rgb(83 80 80 / 82%);" class="circular--square" height="50px" width="50px" [src]="imgurl"/></span> 
+      <div><span (click)="profileUpdate()" class="dp"><img style="margin-top: -13px; box-shadow: 0px 0px 4px rgb(83 80 80 / 82%);object-fit: contain;" class="circular--square" height="50px" width="50px" [src]="imgurl"/></span> 
         
 
         <div style="float: right; font-size: 20px; margin-top: 15px; margin-right: 20px; cursor: pointer;" class="dropdown">
@@ -17,7 +17,7 @@
         </div>
       
       </div>
-      <div class="second"><span><input [ngStyle] = "{'width': leftchatcsschange ?'259px':'','padding-left':leftchatcsschange ?'5px':'','font-size': '15px'}" class="search" (change)="filterchat($event)" [(ngModel)]="searchValue" placeholder="Type and click enter to filter the chat " type="text"/><span (click)="removefilter()"><img class="filter" src="../../assets/removefilter.png" /></span></span></div>
+      <div class="second"><span><input [ngStyle] = "{'width': leftchatcsschange ?'259px':'','padding-left':leftchatcsschange ?'5px':'','font-size': '15px'}" class="search" (keyup)="filterchat($event)" [(ngModel)]="searchValue" placeholder="Type and click enter to filter the chat " type="text"/><span (click)="removefilter()"><img class="filter" src="../../assets/removefilter.png" /></span></span></div>
       <div class="second" (click)="openarchieve()" >
          <span class="archive"><i class="bi bi-archive "></i> &nbsp; &nbsp;<span style="margin-left: 20px; color: black; font-size: 18px;cursor: pointer;">Archived</span> </span>
       </div>
@@ -28,7 +28,7 @@
         <img style="margin-top: -47px;
         margin-left: 10px;
         width: 52px;
-        height: 52px;" class="circular--square" [src]="friend.imgurl"/> 
+        height: 52px;object-fit: contain;" class="circular--square" [src]="friend.imgurl"/> 
 
         
         <div  class="nameandmsg">
@@ -81,23 +81,51 @@
           <div *ngIf="showdropchat;" class="dropdown-content">
              <p (click)="closechat()">Close Chat</p>
              <p (click)="deletechat()">Delete Chat</p>
+             <p (click)="clearchat()">Clear Chat</p>
           </div>
         </div>
       </div>
       <div class="chatbox" #chatelement>
-        
-        <div *ngFor="let msg of messageslist" [ngStyle] = "{'margin-left': openchatcsschange ? '-22px':''}"  class="msg">{{msg.message}}</div>
-       
+        <!-- <div *ngFor="let msg of messageslist" [ngStyle] = "{'margin-left': openchatcsschange ? '-22px':''}" [ngStyle]="{'float':msg.from==Name?'right':''}" class="msg">{{msg.message}}</div> -->
+       <div *ngIf="!openchatcsschange" class="msgbox" >
+        <!--   -->
+         <div [ngStyle]="{'display':'flex','flex-direction':msg.from==Name?'row-reverse':'','margin-right':msg.from==Name?'22px':''}" #messages *ngFor="let msg of messageslist">
+          <div [ngStyle]="{'background-color':msg.from==Name?'':'white'}" class="msg">{{msg.message}}
+              <div style="
+                font-size: 10px;
+                position: absolute;
+                bottom: 2px;
+                right: 11px;
+               ">{{msg.msgdate}}
+             </div>
+          </div>
+        </div>
+       </div>
+
+       <div *ngIf="openchatcsschange" class="msgbox" >
+        <!--   -->
+         <div [ngStyle]="{'display':'flex','flex-direction':msg.from==Name?'row-reverse':'','margin-right':msg.from==Name?'-23px':'23px'}" #messages *ngFor="let msg of messageslist">
+          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','margin-left':msg.from==Name?'20px':'-24px'}" class="msg">{{msg.message}}
+              <div style="
+                font-size: 10px;
+                position: absolute;
+                bottom: 2px;
+                right: 11px;
+               ">{{msg.msgdate}}
+             </div>
+          </div>
+        </div>
+       </div>
       </div>
      
   <div class="input-group mb-3 bottomchat">
-    <input [(ngModel)]="messagetxt" style="
+    <input (input)="enablesendbtn(msg.value)" [(ngModel)]="messagetxt" style="
     width: 100%;
     padding-left: 21px;
     border-radius: 10px;
     border: black;
 " #msg  type="text" placeholder="Type a message"/>
-    <div (click) ="sendmsg(msg.value)" class="input-group-append send" ><i class="bi bi-send-fill"></i></div>
+    <div *ngIf="enablesend"  (click) ="sendmsg(msg.value)" class="input-group-append send" ><i class="bi bi-send-fill"></i></div>
     <!-- <img width="30px" height="30px" [src]="sendicon"/> -->
   </div>
 <!-- 

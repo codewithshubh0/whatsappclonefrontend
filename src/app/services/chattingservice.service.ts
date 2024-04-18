@@ -15,7 +15,7 @@ this.socket = io(this.url);
   user = {}
   private socket: Socket;
   private url = 'https://whatsappapi-srlb.onrender.com'; //for deployment
-  //private url = 'http://localhost:8000';
+ // private url = 'http://localhost:8000';
 
 
   Registeruser(email:string,name:string,password:string):Observable<any>{
@@ -68,7 +68,11 @@ this.socket = io(this.url);
     return this.http.get(this.url+"/messages/getmessages/"+connectionId);
   }
 
-  savemessages(conversationId:string,from:string,to:string,message:string):Observable<any>{
-    return this.http.post<any[]>(this.url+"/messages/savemessages",{conversationId:conversationId,from:from,to:to,message:message});
+  savemessages(conversationId:string,from:string,message:string,msgdate:any):Observable<any>{
+    return this.http.post<any[]>(this.url+"/messages/savemessages",{connid:conversationId,from:from,message:message,date:msgdate});
+  }
+
+  clearchat(conversationId:string){
+      return this.http.post<any[]>(this.url+"/messages/clearchatmessages",{connid:conversationId});
   }
 }

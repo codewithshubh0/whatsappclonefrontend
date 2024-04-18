@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChattingserviceService } from '../services/chattingservice.service';
 import { Buffer } from 'buffer';
@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { HostListener } from "@angular/core";
 import {formatDate } from '@angular/common';
 import { ViewportScroller } from '@angular/common';
+import { DatePipe } from '@angular/common';
 declare var google:any ;
 @Component({
   selector: 'app-home',
@@ -14,7 +15,9 @@ declare var google:any ;
 })
 export class HomeComponent implements OnInit {
 
-  @ViewChild('chatelement',{static:true}) containerElement:ElementRef
+  // @ViewChild('chatelement',{static:true}) containerElement:ElementRef
+  @ViewChildren('messages') messages: QueryList<any>;
+@ViewChild('chatelement') chatelement: ElementRef;
   objectKeys = Object.keys;
   public showchat:Boolean =true
   public showallchatpage:Boolean = true
@@ -36,7 +39,7 @@ export class HomeComponent implements OnInit {
   public message:Array<string>= [];
   public newuserjoined :Array<{user:string, message:string}>= [];
   public friendsList :Array<[name:string,convId:string,userId:string,imgurl:string]> = [];
-  public messageslist:Array<{message:string}> =[]
+  public messageslist:Array<{message:string,from:string,msgdate:string}> =[]
   resultForName:string="No User"
   public connectionslist:any=[];
   public friends:Array<{name:string,connId:string,imgurl:string}>=[];
@@ -57,7 +60,7 @@ export class HomeComponent implements OnInit {
   time:any
 
 
-  constructor(private router:Router,private service:ChattingserviceService,private _sanitizer: DomSanitizer,private viewportScroller:ViewportScroller){
+  constructor(private router:Router,private service:ChattingserviceService,private _sanitizer: DomSanitizer,private viewportScroller:ViewportScroller,private datepipe:DatePipe){
      if(sessionStorage.getItem("showallchatpage")==null)
         sessionStorage.setItem("showallchatpage","true");
         this.backstyle = 'chat'
@@ -73,7 +76,8 @@ export class HomeComponent implements OnInit {
      this.userdetail = this.service.user   
      this.service.listen("new message").subscribe((data)=>{
       //alert(data.user + " "+ data.message);
-      this.messageslist.push({message:data.message})
+
+      this.messageslist.push({message:data.message,from:data.user,msgdate:this.datepipe.transform(data.date, 'MMM d, y, h:mm a')+""})
     }) 
 const userId = sessionStorage.getItem("userId")?.toString() || ""
     this.service.getContacts(userId).subscribe((allConnection)=>{
@@ -139,15 +143,30 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
             this.moblescreen = false;
           }
     }
-
-
+    enablesend = false;
+    enablesendbtn(msg:any){
+    if(msg && msg!=''){
+      this.enablesend = true;
+    }else{
+      this.enablesend = false;
+    }
+    }
   ngOnInit(): void {
     if(sessionStorage.getItem("name")==null || sessionStorage.getItem("name")==undefined){
       this.router.navigate(["login"]);
     }
   this.getImage();
   }
-
+  ngAfterViewInit() {
+    this.scrollToBottom();
+    this.messages.changes.subscribe(this.scrollToBottom);
+  }
+  
+  scrollToBottom = () => {
+    try {
+      this.chatelement.nativeElement.scrollTop = this.chatelement.nativeElement.scrollHeight;
+    } catch (err) {}
+  }
   getImage(){
     const userId = sessionStorage.getItem("userId")?.toString() || ""
     this.service.getImageOfUser(userId).subscribe((data)=>{
@@ -160,6 +179,12 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
  })
   }
  
+  calculateDiff(dateSent){
+    let currentDate = new Date();
+    dateSent = new Date(dateSent);
+ 
+     return Math.floor((Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) - Date.UTC(dateSent.getFullYear(), dateSent.getMonth(), dateSent.getDate()) ) /(1000 * 60 * 60 * 24));
+   }
   sendmsg(msg:any){
   //  this.viewportScroller.scrollToPosition([0,document.body.scrollHeight])
     var today = new Date();
@@ -171,17 +196,26 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     this.message.push(msg);
     //sessionStorage.setItem("message",JSON.stringify(this.message));
     var connId = sessionStorage.getItem("connectionId") || ''
+    var currdate = this.datepipe.transform(new Date(), 'yyyy-MM-dd hh:mm:ss a')
     if(connId!=''){
-      this.service.emit("message",{user: this.Name,room:connId,message:this.Name+": "+msg })
+      
+      this.service.emit("message",{user: this.Name,room:connId,message:msg,date:currdate})
       this.messagetxt =''
     }
     var userId = sessionStorage.getItem("userId") || ''
-    // this.service.savemessages(connId,userId,"",msg).subscribe((data)=>{
-       
-    // })
-    const container = this.containerElement.nativeElement;
-    container.scrollToPosition([0,container.screenHeight])
-    this.viewportScroller.scrollToPosition([0,document.body.scrollHeight])
+    this.service.savemessages(connId,this.Name,msg,currdate).subscribe({
+       next:(data)=>{
+        console.log(data);
+        // this.messageslist.push({})
+       },
+       error:(error)=>{
+        console.log(error);
+        
+       }
+    })
+    // const container = this.containerElement.nativeElement;
+    // container.scrollToPosition([0,container.screenHeight])
+    // this.viewportScroller.scrollToPosition([0,document.body.scrollHeight])
   }
 
   About:string = localStorage.getItem("About") || ""
@@ -235,7 +269,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
      if(data[0]!=null || data[0]!=undefined){
         for(let msg of data){
           for(let m of msg.messages){
-            this.messageslist.push({message:m});
+            this.messageslist.push({message:m.message,from:m.from,msgdate:this.datepipe.transform(m.dateandtime, 'MMM d, y, h:mm a')+""});
           }
         }
      }
@@ -264,7 +298,21 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
            window.location.reload()   
       })
     }
+    this.clearchat()
    
+  }
+
+  clearchat(){
+    var connId = sessionStorage.getItem("connectionId")?.toString() || "";
+    
+    if(connId!=""){
+      this.service.clearchat(connId).subscribe((data)=>{
+          //alert(data);
+         console.log(data);
+         
+     })
+   }
+
   }
 
   profileUpdate(){
