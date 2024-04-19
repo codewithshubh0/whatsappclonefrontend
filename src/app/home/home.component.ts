@@ -327,7 +327,9 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
   backtochat(){
     sessionStorage.setItem("showallchatpage","true");
     sessionStorage.setItem("profilepage","false");
-    window.location.reload()
+    this.showallchatpage = true;
+    this.profilepage = false;
+   // this.ngOnInit()
   }
   filterchat(filterwith:any){
     this.friendsbackup = this.friends; 

@@ -17,7 +17,7 @@
         </div>
       
       </div>
-      <div class="second"><span><input [ngStyle] = "{'width': leftchatcsschange ?'259px':'','padding-left':leftchatcsschange ?'5px':'','font-size': '15px'}" class="search" (keyup)="filterchat($event)" [(ngModel)]="searchValue" placeholder="Type to filter the chat " type="text"/><span (click)="removefilter()"><img class="filter" src="../../assets/removefilter.png" /></span></span></div>
+      <div class="second"><span><input [ngStyle] = "{'width': leftchatcsschange ?'94%':'','padding-left':leftchatcsschange ?'5px':'','font-size': '15px'}" class="search" (keyup)="filterchat($event)" [(ngModel)]="searchValue" placeholder="Type to filter the chat " type="text"/><span [ngStyle]="{'display':leftchatcsschange?'none':''}" (click)="removefilter()"><img class="filter" src="../../assets/removefilter.png" /></span></span></div>
       <div class="second" (click)="openarchieve()" >
          <span class="archive"><i class="bi bi-archive "></i> &nbsp; &nbsp;<span style="margin-left: 20px; color: black; font-size: 18px;cursor: pointer;">Archived</span> </span>
       </div>
