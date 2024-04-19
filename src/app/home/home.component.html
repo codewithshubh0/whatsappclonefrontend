@@ -213,11 +213,11 @@
       
       <!-- <div class="profilebackbut"><span><input class="searchchat" #searchname placeholder="Enter User to Add" type="text"/></span> <i (click)="searchchat(searchname.value)" class="bi bi-search searchicon"></i></div> -->
       <p (click)="goback()"><i class="bi bi-arrow-left backarrow"></i></p>
-      <div class="input-group mb-3 profilebackbut">
-        <input  #searchname placeholder="Enter User to Add" type="text" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-        <div class="input-group-append searchicon">
-          <i (input)="searchchat(searchname.value)" class="bi bi-search searchicon"></i>
-        </div>
+      <div class="input-group mb-3 profilebackbut" [ngStyle]="{'width':leftchatcsschange?'95%':'96%'}">
+        <input (input)="searchchat(searchname.value)" #searchname placeholder="Enter User to Add" type="text" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <!-- <div class="input-group-append searchicon">
+          <i  class="bi bi-search searchicon"></i>
+        </div> -->
       </div>
       
       

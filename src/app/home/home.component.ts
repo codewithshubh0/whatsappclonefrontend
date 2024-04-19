@@ -426,6 +426,11 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
   }
 
   searchchat(name:string){
+
+    if(name==''){
+      this.resultForName = 'No User Found';
+      return;
+    }
     this.service.getUserToAdd(name).subscribe((data)=>{
      
       if(data=="-1"){
