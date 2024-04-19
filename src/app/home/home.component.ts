@@ -76,8 +76,13 @@ export class HomeComponent implements OnInit {
      this.userdetail = this.service.user   
      this.service.listen("new message").subscribe((data)=>{
       //alert(data.user + " "+ data.message);
-
-      this.messageslist.push({message:data.message,from:data.user,msgdate:this.datepipe.transform(data.date, 'MMM d, y, h:mm a')+""})
+      var connId = sessionStorage.getItem("connectionId") || ''
+     // console.log(connId+" - "+data.room);
+      
+     if(connId==data.room){
+          this.messageslist.push({message:data.message,from:data.user,msgdate:this.datepipe.transform(data.date, 'MMM d, y, h:mm a')+""})
+     }
+      
     }) 
 const userId = sessionStorage.getItem("userId")?.toString() || ""
     this.service.getContacts(userId).subscribe((allConnection)=>{
@@ -202,10 +207,12 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
       this.service.emit("message",{user: this.Name,room:connId,message:msg,date:currdate})
       this.messagetxt = null;
     }
+
+   // if(connId==)
     var userId = sessionStorage.getItem("userId") || ''
     this.service.savemessages(connId,this.Name,msg,currdate).subscribe({
        next:(data)=>{
-        console.log(data);
+       // console.log(data);
         // this.messageslist.push({})
         this.enablesend = false;
        },
@@ -311,7 +318,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     if(connId!=""){
       this.service.clearchat(connId).subscribe((data)=>{
           //alert(data);
-         console.log(data);
+        // console.log(data);
          this.messageslist = [];
          this.showdropchat = false;
      })
@@ -373,7 +380,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     
     var userId = sessionStorage.getItem("userId") || '';
     const file = e.target.files[0];
-    console.log(file);
+    //console.log(file);
     const formdata = new FormData();
     formdata.append("image",file);
     formdata.append("userId",userId)
@@ -483,7 +490,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
                 sessionStorage.setItem("profilepage","false");
                 window.location.reload();
               }else if(data1=="Already Added"){
-                alert("Aleady Added");
+                alert("Already Added");
                 // sessionStorage.setItem("showallchatpage","true");
                 // sessionStorage.setItem("profilepage","false");
                 // window.location.reload();
