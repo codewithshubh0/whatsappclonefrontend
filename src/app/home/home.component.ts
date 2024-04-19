@@ -309,7 +309,8 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
       this.service.clearchat(connId).subscribe((data)=>{
           //alert(data);
          console.log(data);
-         
+         this.messageslist = [];
+         this.showdropchat = false;
      })
    }
 

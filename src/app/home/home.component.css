@@ -133,12 +133,16 @@
   position: absolute;
   width: 100%;
   left: 0;
-  height: 60px;
-  background-color: rgb(237, 237, 237);
+  /* height: 60px; */
+  /* background-color: rgb(237, 237, 237); */
   /* border-bottom: 1.5px solid rgba(138, 138, 138, 0.2); */
   bottom: 0;
   margin-bottom: 8px;
   border-radius: 10px;
+}
+
+.bottomchat::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
 }
 .profile{
     color: white;
@@ -195,6 +199,22 @@
     height: 522px;
     overflow-y: scroll;
 
+}
+.sendinput{
+  width: 85%;
+  padding-left: 21px;
+  border-radius: 21px;
+  border: black;
+  height: 40px;
+  resize: none;
+  box-shadow: 0px 0px 14px #2e2e2e;
+}
+
+.sendinput::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+  .chatbox::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }
 /* .chat{
   height: 550px;
@@ -398,7 +418,7 @@ cursor: pointer;
     padding: 20px;
   }
 .send{
-  color: rgb(6, 138, 78);
+  /* color: rgb(6, 138, 78);
   transform: rotate(45deg);
   width: 20px;
   height: 20px;
@@ -407,7 +427,15 @@ cursor: pointer;
   font-size: 35px;
   margin-left: -42px;
   cursor: pointer;
-  margin-right: 22px;
+  margin-right: 22px; */
+  color: rgb(6, 138, 78);
+  width: 42px;
+  height: 40px;
+  margin-left: 4px;
+  cursor: pointer;
+}
+textarea::-webkit-scrollbar {
+  display: none;
 }
 .shadow{
   padding: 51px;
