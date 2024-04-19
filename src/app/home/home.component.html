@@ -106,7 +106,7 @@
        <div *ngIf="openchatcsschange" class="msgbox" >
         <!--   -->
          <div [ngStyle]="{'display':'flex','flex-direction':msg.from==Name?'row-reverse':'','margin-right':msg.from==Name?'-23px':'23px'}" #messages *ngFor="let msg of messageslist">
-          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','margin-left':msg.from==Name?'20px':'-24px','width':msg.from==Name?'383px':'338px'}" class="msg">{{msg.message}}
+          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','margin-left':msg.from==Name?'20px':'-24px','width':msg.from==Name?'383px':'310px'}" class="msg">{{msg.message}}
               <div style="
                 font-size: 10px;
                 position: absolute;
@@ -120,7 +120,7 @@
       </div>
      
   <div class="input-group mb-3 bottomchat" [ngStyle]="{'margin-left':!openchatcsschange?'13px':''}">
-    <textarea class="sendinput" [ngStyle]="{'width':!openchatcsschange?'93%':'85%'}" (input)="enablesendbtn(msg.value)" [(ngModel)]="messagetxt"  #msg  type="text" placeholder="Type a message"></textarea>
+    <textarea class="sendinput" [ngStyle]="{'width':!openchatcsschange?'93%':'83%'}" (input)="enablesendbtn(msg.value)" [(ngModel)]="messagetxt"  #msg  type="text" placeholder="Type a message"></textarea>
     <img src="../../assets/send.png" *ngIf="enablesend"  (click) ="sendmsg(msg.value)" class="input-group-append send" >
     <img src="../../assets/mic.png" *ngIf="!enablesend" class="input-group-append send" >
     <!-- <img width="30px" height="30px" [src]="sendicon"/> -->
