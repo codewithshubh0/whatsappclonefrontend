@@ -200,13 +200,14 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     if(connId!=''){
       
       this.service.emit("message",{user: this.Name,room:connId,message:msg,date:currdate})
-      this.messagetxt =''
+      this.messagetxt = null;
     }
     var userId = sessionStorage.getItem("userId") || ''
     this.service.savemessages(connId,this.Name,msg,currdate).subscribe({
        next:(data)=>{
         console.log(data);
         // this.messageslist.push({})
+        this.enablesend = false;
        },
        error:(error)=>{
         console.log(error);
@@ -220,6 +221,8 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
 
   About:string = localStorage.getItem("About") || ""
   displayChatwithmessages(friend:any){
+    this.enablesend = false;
+    this.messagetxt = null;
     if(this.screenWidth<500){
        this.clickforchat = true;
     }else{
