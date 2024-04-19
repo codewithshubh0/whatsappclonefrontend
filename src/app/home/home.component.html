@@ -91,12 +91,13 @@
        <div *ngIf="!openchatcsschange" class="msgbox" >
         <!--   -->
          <div [ngStyle]="{'display':'flex','flex-direction':msg.from==Name?'row-reverse':'','margin-right':msg.from==Name?'22px':''}" #messages *ngFor="let msg of messageslist">
-          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','width':'383px'}" class="msg">{{msg.message}}
+          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','width':'383px','border-bottom-right-radius':msg.from==Name?'0px':'','border-bottom-left-radius':msg.from==Name?'':'0px'}" class="msg">{{msg.message}}
               <div style="
                 font-size: 10px;
                 position: absolute;
                 bottom: 2px;
                 right: 11px;
+                font-family: math;
                ">{{msg.msgdate}}
              </div>
           </div>
@@ -106,12 +107,13 @@
        <div *ngIf="openchatcsschange" class="msgbox" >
         <!--   -->
          <div [ngStyle]="{'display':'flex','flex-direction':msg.from==Name?'row-reverse':'','margin-right':msg.from==Name?'-23px':'23px'}" #messages *ngFor="let msg of messageslist">
-          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','margin-left':msg.from==Name?'20px':'-24px','width':'310px'}" class="msg">{{msg.message}}
+          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','margin-left':msg.from==Name?'20px':'-24px','width':'310px','border-bottom-right-radius':msg.from==Name?'0px':'','border-bottom-left-radius':msg.from==Name?'':'0px'}" class="msg">{{msg.message}}
               <div style="
                 font-size: 10px;
                 position: absolute;
                 bottom: 2px;
                 right: 11px;
+                font-family: math;
                ">{{msg.msgdate}}
              </div>
           </div>
