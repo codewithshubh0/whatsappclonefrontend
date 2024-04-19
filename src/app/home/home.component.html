@@ -106,7 +106,7 @@
        <div *ngIf="openchatcsschange" class="msgbox" >
         <!--   -->
          <div [ngStyle]="{'display':'flex','flex-direction':msg.from==Name?'row-reverse':'','margin-right':msg.from==Name?'-23px':'23px'}" #messages *ngFor="let msg of messageslist">
-          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','margin-left':msg.from==Name?'20px':'-24px'}" class="msg">{{msg.message}}
+          <div [ngStyle]="{'background-color':msg.from==Name?'':'white','margin-left':msg.from==Name?'20px':'-24px','width':msg.from==Name?'383px':'338px'}" class="msg">{{msg.message}}
               <div style="
                 font-size: 10px;
                 position: absolute;
