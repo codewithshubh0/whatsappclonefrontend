@@ -119,8 +119,8 @@
        </div>
       </div>
      
-  <div class="input-group mb-3 bottomchat">
-    <textarea class="sendinput" (input)="enablesendbtn(msg.value)" [(ngModel)]="messagetxt"  #msg  type="text" placeholder="Type a message"></textarea>
+  <div class="input-group mb-3 bottomchat" [ngStyle]="{'margin-left':!openchatcsschange?'13px':''}">
+    <textarea class="sendinput" [ngStyle]="{'width':!openchatcsschange?'93%':'85%'}" (input)="enablesendbtn(msg.value)" [(ngModel)]="messagetxt"  #msg  type="text" placeholder="Type a message"></textarea>
     <img src="../../assets/send.png" *ngIf="enablesend"  (click) ="sendmsg(msg.value)" class="input-group-append send" >
     <!-- <img width="30px" height="30px" [src]="sendicon"/> -->
   </div>
