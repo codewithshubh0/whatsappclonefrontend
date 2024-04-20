@@ -208,9 +208,6 @@ const userId = localStorage.getItem("userId")?.toString() || ""
 
 
   myFunction(){
-    let name = localStorage.getItem("name")?.toString() || ""
-    console.log(name);
-    
       this.service.deleteonlineuserindb(this.Name).subscribe(data=>{console.log(data);
         
       })
