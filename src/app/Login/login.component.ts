@@ -47,6 +47,8 @@ export class LoginComponent implements OnInit {
         client_id: '639800582617-2la8dh8l0n5vdkirg91uqqmaidtn03s3.apps.googleusercontent.com',
         callback: (resp:any)=>{
             this.handleLogin(resp);
+            this.chatservice.emit
+               
              }
       })
   
@@ -82,13 +84,20 @@ export class LoginComponent implements OnInit {
               //console.log(data+" getting data");
               
                     if(data!="User Not Found" && data!="wrong password"){
-                      this.chatservice.setuser(data);
+
+                     
+                     // this.chatservice.addonlineuserindb(data["name"]).subscribe((data)=>{console.log(data); })
+                     
                       sessionStorage.setItem("name",data["name"])
                       sessionStorage.setItem("userId",data["_id"])
                       this.spinner.hide();
+
+                      //alert(data["name"]);
+                      
+                      this.chatservice.emit("joinning",{username:data["name"],msg:"new user login"})
+                      
                       this.route.navigate(['home']);
-                      
-                      
+   
                     }else{
                       this.spinner.hide();
                       alert(data)
@@ -121,18 +130,14 @@ export class LoginComponent implements OnInit {
             this.chatservice.setuser(data);
             sessionStorage.setItem("name",data["name"])
             sessionStorage.setItem("userId",data["_id"])
-            //sessionStorage.setItem("userId",data["user"])
-            // this.chatservice.getContacts(data["_id"]).subscribe((allConnection)=>{
-            //   if(allConnection[0]!=null)
-            //        sessionStorage.setItem("connectionId",allConnection[0]._id);
-            //        sessionStorage.setItem("friends",allConnection)
-            // })
-
+           // this.chatservice.addonlineuserindb(data["name"]).subscribe((data)=>{console.log(data); })
+            this.chatservice.emit("joinning",{username:data["name"],msg:"new user login"})
             
             this.route.navigate(['home']);
             
             
           }else{
+           
             alert(data)
           }
     });

@@ -449,6 +449,7 @@ textarea::-webkit-scrollbar {
    
     display: table;
     margin: 0 auto;
+    object-fit: contain;
 }
 .upload{
   padding: 51px;

@@ -8,6 +8,7 @@ import {formatDate } from '@angular/common';
 import { ViewportScroller } from '@angular/common';
 import { DatePipe } from '@angular/common';
 declare var google:any ;
+import { io,Socket } from 'socket.io-client';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -18,6 +19,7 @@ export class HomeComponent implements OnInit {
   // @ViewChild('chatelement',{static:true}) containerElement:ElementRef
   @ViewChildren('messages') messages: QueryList<any>;
 @ViewChild('chatelement') chatelement: ElementRef;
+private socket: Socket;
   objectKeys = Object.keys;
   public showchat:Boolean =true
   public showallchatpage:Boolean = true
@@ -40,11 +42,13 @@ export class HomeComponent implements OnInit {
   public newuserjoined :Array<{user:string, message:string}>= [];
   public friendsList :Array<[name:string,convId:string,userId:string,imgurl:string]> = [];
   public messageslist:Array<{message:string,from:string,msgdate:string}> =[]
+  public friendschatdet = {picurl:'',status:'offline'}
   resultForName:string="No User"
   public connectionslist:any=[];
-  public friends:Array<{name:string,connId:string,imgurl:string}>=[];
-  public friendsbackup:Array<{name:string,connId:string,imgurl:string}>=[];
-  public friendchatpic = "./assets/default-user-image.png"
+  public friends:Array<{name:string,connId:string,imgurl:string,lastmsg:string}>=[];
+  public friendsbackup:Array<{name:string,connId:string,imgurl:string,lastmsg:string}>=[];
+  public defaultpic = "./assets/default-user-image.png"
+
   searchValue:any =''
   messagetxt:any =''
   Name:string = sessionStorage.getItem("name")?.toString() || ""
@@ -58,10 +62,24 @@ export class HomeComponent implements OnInit {
   openchatcsschange:boolean = false;
   moblescreen:boolean=  false;
   time:any
+  onlineUsers:any[]= [];
+  tabWasClosed = false;
+  
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunloadHandler(event) {
+      this.myFunction();
+  }
 
 
   constructor(private router:Router,private service:ChattingserviceService,private _sanitizer: DomSanitizer,private viewportScroller:ViewportScroller,private datepipe:DatePipe){
-     if(sessionStorage.getItem("showallchatpage")==null)
+  //   window.addEventListener("beforeunload", ()=>{
+  //     if(this.tabWasClosed){
+  //       this.service.deleteonlineuserindb(this.Name).subscribe(data=>{console.log(data);
+  //       })
+  //   }
+  //  });
+    
+    if(sessionStorage.getItem("showallchatpage")==null)
         sessionStorage.setItem("showallchatpage","true");
         this.backstyle = 'chat'
 
@@ -78,12 +96,15 @@ export class HomeComponent implements OnInit {
       //alert(data.user + " "+ data.message);
       var connId = sessionStorage.getItem("connectionId") || ''
      // console.log(connId+" - "+data.room);
-      
      if(connId==data.room){
           this.messageslist.push({message:data.message,from:data.user,msgdate:this.datepipe.transform(data.date, 'MMM d, y, h:mm a')+""})
      }
-      
     }) 
+
+    this.service.listen("new user joined").subscribe((data)=>{
+     
+    }) 
+
 const userId = sessionStorage.getItem("userId")?.toString() || ""
     this.service.getContacts(userId).subscribe((allConnection)=>{
          //this.friends = allConnection
@@ -93,6 +114,12 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
               
               for(let conn of Object.keys(allConnection)){
                 var img = '';
+                let lastmsg =''
+                this.service.getlastmsg(allConnection[conn]).subscribe(data=>{
+                  
+                  lastmsg = data[0]?.message==undefined?'':data[0]?.message;
+                  lastmsg = lastmsg.toString().length>13?lastmsg.toString().substring(0,13):lastmsg
+                })
                 this.service.getUserToAdd(conn).subscribe({
                   next:(data)=>{
                      // console.log(JSON.stringify(data)+" getting ths user");
@@ -104,11 +131,11 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
                               if(data!=null || data!=undefined){
                                 var thumb = Buffer.from(data.image.data).toString('base64');    
                                  img = "data:"+data.image.contentType+""+";base64,"+thumb;
-                                 this.friends.push({name:conn,connId:allConnection[conn],imgurl:img})
+                                 this.friends.push({name:conn,connId:allConnection[conn],imgurl:img,lastmsg:lastmsg})
                                 
                               }else{
                                 img = "./assets/default-user-image.png"
-                                this.friends.push({name:conn,connId:allConnection[conn],imgurl:img})
+                                this.friends.push({name:conn,connId:allConnection[conn],imgurl:img,lastmsg:lastmsg})
                               }   
                             })
                     }else{
@@ -157,16 +184,39 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     }
     }
   ngOnInit(): void {
+
+
     if(sessionStorage.getItem("name")==null || sessionStorage.getItem("name")==undefined){
       this.router.navigate(["login"]);
+    }else{
+      this.service.addonlineuserindb(this.Name).subscribe(data=>{console.log(data);
+       
+      })
+      
     }
+    
   this.getImage();
   }
   ngAfterViewInit() {
     this.scrollToBottom();
     this.messages.changes.subscribe(this.scrollToBottom);
   }
-  
+
+
+
+
+
+  myFunction(){
+    let name = sessionStorage.getItem("name")?.toString() || ""
+    console.log(name);
+    
+      this.service.deleteonlineuserindb(this.Name).subscribe(data=>{console.log(data);
+        
+      })
+   }
+
+
+
   scrollToBottom = () => {
     try {
       this.chatelement.nativeElement.scrollTop = this.chatelement.nativeElement.scrollHeight;
@@ -239,6 +289,11 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
   //  console.log(JSON.stringify(friend)+" friend details");
     
     this.showchat = false;
+    let status;
+    this.service.checkifuseronline(friend.name).subscribe(data=>{
+      console.log(data+" online offline data");
+      status = data;
+    })
    this.service.getUserToAdd(friend.name).subscribe({
     next:(data)=>{
        // console.log(JSON.stringify(data)+" getting ths user");
@@ -246,14 +301,18 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
       if(data!=null){
              this.service.getImageOfUser(data._id).subscribe((data)=>{
               //console.log(data+" getting image");
-              
+             
+             
                 if(data!=null || data!=undefined){
                   var thumb = Buffer.from(data.image.data).toString('base64');    
-                  this.friendchatpic = "data:"+data.image.contentType+""+";base64,"+thumb;
+                  var url = "data:"+data.image.contentType+""+";base64,"+thumb;
                   //console.log(this.mychatpic+" getting chat pic");
-                  
+                  var dat = []
+                 
+                  this.friendschatdet = {picurl:url,status:status}
                 }else{
-                  this.friendchatpic = "./assets/default-user-image.png"
+                  this.friendschatdet = {picurl:this.defaultpic,status:status}
+                 // this.friendchatdetails = "./assets/default-user-image.png"
                 }   
               })
       }else{
@@ -269,7 +328,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     
 
     var connId = sessionStorage.getItem("connectionId") || ''
-   this.service.emit("join",{user:this.Name,room:connId}) 
+   //this.service.emit("join",{user:this.Name,room:connId}) 
 
    this.displayname = friend.name;
 
@@ -409,7 +468,14 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     this.profilepage = sessionStorage.getItem("profilepage")=='true'?true:false;
   }
   logout(){
+    var connId = sessionStorage.getItem("connectionId") || ''
+    var name = sessionStorage.getItem("name") || ''
+    this.service.emit("disconnected",{username:name,msg:"disconnected"})
+   
 
+    this.service.deleteonlineuserindb(name).subscribe((data)=>{console.log(data);
+    })
+    
     google.accounts.id.disableAutoSelect();
     sessionStorage.clear();
     this.router.navigate(["login"])
@@ -504,4 +570,15 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
 
    
   }
+
+//   ngOnDestroy(): void { 
+  
+//   let name = sessionStorage.getItem("name")?.toString() || ""
+//   console.log(name);
+  
+//   if(name==""){
+//     this.service.deleteonlineuserindb(this.Name).subscribe(data=>{console.log(data);
+//     })
+//   }
+//  }
 }

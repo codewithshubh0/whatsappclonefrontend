@@ -15,7 +15,7 @@ this.socket = io(this.url);
   user = {}
   private socket: Socket;
   private url = 'https://whatsappapi-srlb.onrender.com'; //for deployment
-  //private url = 'http://localhost:8000';
+ // private url = 'http://localhost:8000';
 
 
   Registeruser(email:string,name:string,password:string):Observable<any>{
@@ -28,11 +28,23 @@ this.socket = io(this.url);
    getContacts(userId:any):Observable<any>{
     return this.http.get(this.url+"/users/"+userId)
    }
+   checkifuseronline(user):Observable<any>{
+    return this.http.post(this.url+"/users/getonlineusers",{user:user})
+   }
+
+   addonlineuserindb(user:any):Observable<any>{
+    return this.http.post<any[]>(this.url+"/users/storeonlineusers" , {user:user})
+   }
+
+   deleteonlineuserindb(user:any):Observable<any>{
+    return this.http.post<any[]>(this.url+"/users/removeonlineusers" , {user:user})
+   }
+
    setuser(data:any){
      this.user = data;    
    }
 
-    
+   
    listen(eventname:any):Observable<any> {
     return new Observable<any>(observer=>{
       this.socket.on(eventname,function(data:any){
@@ -75,4 +87,7 @@ this.socket = io(this.url);
   clearchat(conversationId:string){
       return this.http.post<any[]>(this.url+"/messages/clearchatmessages",{connid:conversationId});
   }
+  getlastmsg(conversationId:string){
+    return this.http.post<any[]>(this.url+"/users/getlastmsg",{connid:conversationId});
+}
 }
