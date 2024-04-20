@@ -1,4 +1,4 @@
-declare var google:any ;
+
 import { Component, OnInit } from '@angular/core';
 import { FormGroup,FormControl,Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,7 +6,7 @@ import { ChattingserviceService } from '../services/chattingservice.service';
 import { HostListener } from "@angular/core";
 import { json } from 'stream/consumers';
 import { NgxSpinnerService } from 'ngx-spinner';
-
+declare var google:any ;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -41,21 +41,25 @@ export class LoginComponent implements OnInit {
     }
     this.getScreenSize();
   }
-  ngOnInit(): void {
-    google.accounts.id.initialize({
-      client_id: '639800582617-2la8dh8l0n5vdkirg91uqqmaidtn03s3.apps.googleusercontent.com',
-      callback: (resp:any)=>{
-          this.handleLogin(resp);
-           }
-    });
-
+  ngOnInit(){
     
-  google.accounts.id.renderButton(document.getElementById("google-btn"),{
-    theme:'filled_blue',
-    size:'large',
-    shape:'rectangle', 
-    width:250
-  })
+      google.accounts.id.initialize({
+        client_id: '639800582617-2la8dh8l0n5vdkirg91uqqmaidtn03s3.apps.googleusercontent.com',
+        callback: (resp:any)=>{
+            this.handleLogin(resp);
+             }
+      })
+  
+   
+
+    setTimeout(()=>{
+        google.accounts.id.renderButton(document.getElementById("google-btn"),{
+              theme:'filled_blue',
+              size:'large',
+              shape:'rectangle', 
+              width:250
+       })
+   },1000)
   }
   handleLogin(response:any){
   
