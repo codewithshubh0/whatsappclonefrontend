@@ -14,8 +14,8 @@ this.socket = io(this.url);
   }
   user = {}
   private socket: Socket;
-  private url = 'https://whatsappapi-srlb.onrender.com'; //for deployment
-  //private url = 'http://localhost:8000';
+  //private url = 'https://whatsappapi-srlb.onrender.com'; //for deployment
+  private url = 'http://localhost:8000';
 
 
   Registeruser(email:string,name:string,password:string):Observable<any>{

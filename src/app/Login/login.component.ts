@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
       confirmpassword: new FormControl('', [Validators.required]),
     });
 
-    if(localStorage.getItem("name")!=null || localStorage.getItem("name")!=undefined){
+    if(sessionStorage.getItem("name")!=null || sessionStorage.getItem("name")!=undefined){
       this.route.navigate(["home"])
     }
     this.getScreenSize();
@@ -80,10 +80,10 @@ export class LoginComponent implements OnInit {
   
     // decode payload to get info
     var decoded_token = JSON.parse(atob(this.token_payload.toString()));
-    localStorage.setItem("loggedInUser",JSON.stringify(decoded_token));
+    sessionStorage.setItem("loggedInUser",JSON.stringify(decoded_token));
     
-    var name = JSON.parse(localStorage.getItem("loggedInUser")!).name;
-     var email = JSON.parse(localStorage.getItem("loggedInUser")!).email;
+    var name = JSON.parse(sessionStorage.getItem("loggedInUser")!).name;
+     var email = JSON.parse(sessionStorage.getItem("loggedInUser")!).email;
   
       this.chatservice.Registeruser(email,name,'').subscribe((data)=>{
       
@@ -97,8 +97,8 @@ export class LoginComponent implements OnInit {
                      
                      // this.chatservice.addonlineuserindb(data["name"]).subscribe((data)=>{console.log(data); })
                      
-                      localStorage.setItem("name",data["name"])
-                      localStorage.setItem("userId",data["_id"])
+                      sessionStorage.setItem("name",data["name"])
+                      sessionStorage.setItem("userId",data["_id"])
                       this.spinner.hide();
 
                       //alert(data["name"]);
@@ -137,8 +137,8 @@ export class LoginComponent implements OnInit {
        
           if(data!="User Not Found" && data!="wrong password"){
             this.chatservice.setuser(data);
-            localStorage.setItem("name",data["name"])
-            localStorage.setItem("userId",data["_id"])
+            sessionStorage.setItem("name",data["name"])
+            sessionStorage.setItem("userId",data["_id"])
            // this.chatservice.addonlineuserindb(data["name"]).subscribe((data)=>{console.log(data); })
             this.chatservice.emit("joinning",{username:data["name"],msg:"new user login"})
             
