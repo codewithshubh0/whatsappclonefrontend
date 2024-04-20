@@ -23,7 +23,7 @@ private socket: Socket;
   objectKeys = Object.keys;
   public showchat:Boolean =true
   public showallchatpage:Boolean = true
-  public profilepage:Boolean = sessionStorage.getItem("profilepage")=='true'?true:false;
+  public profilepage:Boolean = localStorage.getItem("profilepage")=='true'?true:false;
   public showarchieved = false;
   public noedit:Boolean = true;
   public noedit1:Boolean = true;
@@ -51,7 +51,7 @@ private socket: Socket;
 
   searchValue:any =''
   messagetxt:any =''
-  Name:string = sessionStorage.getItem("name")?.toString() || ""
+  Name:string = localStorage.getItem("name")?.toString() || "" 
   userdetail:any = {}
   screenHeight: number;
   screenWidth: number;
@@ -79,22 +79,22 @@ private socket: Socket;
   //   }
   //  });
     
-    if(sessionStorage.getItem("showallchatpage")==null)
-        sessionStorage.setItem("showallchatpage","true");
+    if(localStorage.getItem("showallchatpage")==null)
+        localStorage.setItem("showallchatpage","true");
         this.backstyle = 'chat'
 
-    if(sessionStorage.getItem("profilepage")==null)
-        sessionStorage.setItem("profilepage","false");
+    if(localStorage.getItem("profilepage")==null)
+        localStorage.setItem("profilepage","false");
         this.backstyle = 'chat'
 
-    if(sessionStorage.getItem("showarchieved")==null)
-        sessionStorage.setItem("showarchieved","false");
+    if(localStorage.getItem("showarchieved")==null)
+        localStorage.setItem("showarchieved","false");
         this.backstyle = 'chat'
 
      this.userdetail = this.service.user   
      this.service.listen("new message").subscribe((data)=>{
       //alert(data.user + " "+ data.message);
-      var connId = sessionStorage.getItem("connectionId") || ''
+      var connId = localStorage.getItem("connectionId") || ''
      // console.log(connId+" - "+data.room);
      if(connId==data.room){
           this.messageslist.push({message:data.message,from:data.user,msgdate:this.datepipe.transform(data.date, 'MMM d, y, h:mm a')+""})
@@ -105,7 +105,7 @@ private socket: Socket;
      
     }) 
 
-const userId = sessionStorage.getItem("userId")?.toString() || ""
+const userId = localStorage.getItem("userId")?.toString() || ""
     this.service.getContacts(userId).subscribe((allConnection)=>{
          //this.friends = allConnection
              
@@ -186,7 +186,8 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
   ngOnInit(): void {
 
 
-    if(sessionStorage.getItem("name")==null || sessionStorage.getItem("name")==undefined){
+    if(localStorage.getItem("name")==null || localStorage.getItem("name")==undefined){
+      
       this.router.navigate(["login"]);
     }else{
       this.service.addonlineuserindb(this.Name).subscribe(data=>{console.log(data);
@@ -207,7 +208,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
 
 
   myFunction(){
-    let name = sessionStorage.getItem("name")?.toString() || ""
+    let name = localStorage.getItem("name")?.toString() || ""
     console.log(name);
     
       this.service.deleteonlineuserindb(this.Name).subscribe(data=>{console.log(data);
@@ -223,7 +224,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     } catch (err) {}
   }
   getImage(){
-    const userId = sessionStorage.getItem("userId")?.toString() || ""
+    const userId = localStorage.getItem("userId")?.toString() || ""
     this.service.getImageOfUser(userId).subscribe((data)=>{
       if(data!=null || data!=undefined){
         var thumb = Buffer.from(data.image.data).toString('base64');    
@@ -249,8 +250,8 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
       return;
      }
     this.message.push(msg);
-    //sessionStorage.setItem("message",JSON.stringify(this.message));
-    var connId = sessionStorage.getItem("connectionId") || ''
+    //localStorage.setItem("message",JSON.stringify(this.message));
+    var connId = localStorage.getItem("connectionId") || ''
     var currdate = this.datepipe.transform(new Date(), 'yyyy-MM-dd hh:mm:ss a')
     if(connId!=''){
       
@@ -259,7 +260,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     }
 
    // if(connId==)
-    var userId = sessionStorage.getItem("userId") || ''
+    var userId = localStorage.getItem("userId") || ''
     this.service.savemessages(connId,this.Name,msg,currdate).subscribe({
        next:(data)=>{
        // console.log(data);
@@ -285,7 +286,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     }else{
         this.clickforchat = false
     }
-    sessionStorage.setItem("connectionId",friend.connId);
+    localStorage.setItem("connectionId",friend.connId);
   //  console.log(JSON.stringify(friend)+" friend details");
     
     this.showchat = false;
@@ -327,7 +328,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
    })
     
 
-    var connId = sessionStorage.getItem("connectionId") || ''
+    var connId = localStorage.getItem("connectionId") || ''
    //this.service.emit("join",{user:this.Name,room:connId}) 
 
    this.displayname = friend.name;
@@ -358,7 +359,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
 
   deletechat(){
     
-    var connId = sessionStorage.getItem("connectionId")?.toString() || "";
+    var connId = localStorage.getItem("connectionId")?.toString() || "";
     if(connId!=""){
        this.service.deleteConversation(connId).subscribe((data)=>{
            //alert(data);
@@ -372,7 +373,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
   }
 
   clearchat(){
-    var connId = sessionStorage.getItem("connectionId")?.toString() || "";
+    var connId = localStorage.getItem("connectionId")?.toString() || "";
     
     if(connId!=""){
       this.service.clearchat(connId).subscribe((data)=>{
@@ -386,16 +387,16 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
   }
 
   profileUpdate(){
-    sessionStorage.setItem("showallchatpage","false");
-    sessionStorage.setItem("profilepage","true");
-     sessionStorage.setItem("showarchieved","false");
-     this.showallchatpage = sessionStorage.getItem("showallchatpage")=='true'?true:false;
-     this.profilepage = sessionStorage.getItem("profilepage")=='true'?true:false;
-     this.showarchieved = sessionStorage.getItem("showarchieved")=='true'?true:false;
+    localStorage.setItem("showallchatpage","false");
+    localStorage.setItem("profilepage","true");
+     localStorage.setItem("showarchieved","false");
+     this.showallchatpage = localStorage.getItem("showallchatpage")=='true'?true:false;
+     this.profilepage = localStorage.getItem("profilepage")=='true'?true:false;
+     this.showarchieved = localStorage.getItem("showarchieved")=='true'?true:false;
   }
   backtochat(){
-    sessionStorage.setItem("showallchatpage","true");
-    sessionStorage.setItem("profilepage","false");
+    localStorage.setItem("showallchatpage","true");
+    localStorage.setItem("profilepage","false");
     this.showallchatpage = true;
     this.profilepage = false;
    // this.ngOnInit()
@@ -420,7 +421,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     this.noedit = false;
   }
   editdone(name:string){
-    sessionStorage.setItem("Name",name);
+    localStorage.setItem("Name",name);
     this.noedit = true;
     window.location.reload()
   }
@@ -437,7 +438,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
 
   onSelectFile(e:any){
     
-    var userId = sessionStorage.getItem("userId") || '';
+    var userId = localStorage.getItem("userId") || '';
     const file = e.target.files[0];
     //console.log(file);
     const formdata = new FormData();
@@ -462,14 +463,14 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     this.showdropchat = !this.showdropchat
   }
   Addchat(){
-    sessionStorage.setItem("showallchatpage","false");
-    sessionStorage.setItem("profilepage","false");
-    this.showallchatpage = sessionStorage.getItem("showallchatpage")=='true'?true:false;
-    this.profilepage = sessionStorage.getItem("profilepage")=='true'?true:false;
+    localStorage.setItem("showallchatpage","false");
+    localStorage.setItem("profilepage","false");
+    this.showallchatpage = localStorage.getItem("showallchatpage")=='true'?true:false;
+    this.profilepage = localStorage.getItem("profilepage")=='true'?true:false;
   }
   logout(){
-    var connId = sessionStorage.getItem("connectionId") || ''
-    var name = sessionStorage.getItem("name") || ''
+    var connId = localStorage.getItem("connectionId") || ''
+    var name = localStorage.getItem("name") || ''
     this.service.emit("disconnected",{username:name,msg:"disconnected"})
    
 
@@ -477,25 +478,25 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
     })
     
     google.accounts.id.disableAutoSelect();
-    sessionStorage.clear();
+    localStorage.clear();
     this.router.navigate(["login"])
   }
 
   goback(){
-    sessionStorage.setItem("showallchatpage","true");
-    sessionStorage.setItem("profilepage","false");
-    this.profilepage = sessionStorage.getItem("profilepage")=='true'?true:false;
-    this.showallchatpage = sessionStorage.getItem("showallchatpage")=='true'?true:false;
+    localStorage.setItem("showallchatpage","true");
+    localStorage.setItem("profilepage","false");
+    this.profilepage = localStorage.getItem("profilepage")=='true'?true:false;
+    this.showallchatpage = localStorage.getItem("showallchatpage")=='true'?true:false;
     this.resultdp = './assets/default-user-image.png'
   }
 
   openarchieve(){
-    sessionStorage.setItem("showarchieved","true");
-    sessionStorage.setItem("showallchatpage","false");
-    sessionStorage.setItem("profilepage","true");
-    this.showarchieved = sessionStorage.getItem("showarchieved")=='true'?true:false;
-    this.showallchatpage = sessionStorage.getItem("showallchatpage")=='true'?true:false;
-    this.profilepage = sessionStorage.getItem("profilepage")=='true'?true:false;
+    localStorage.setItem("showarchieved","true");
+    localStorage.setItem("showallchatpage","false");
+    localStorage.setItem("profilepage","true");
+    this.showarchieved = localStorage.getItem("showarchieved")=='true'?true:false;
+    this.showallchatpage = localStorage.getItem("showallchatpage")=='true'?true:false;
+    this.profilepage = localStorage.getItem("profilepage")=='true'?true:false;
   }
 
   searchchat(name:string){
@@ -547,18 +548,18 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
   addUser(){
 
     this.service.getUserToAdd(this.resultForName).subscribe((data)=>{
-      var userId = sessionStorage.getItem("userId")?.toString() || '';
+      var userId = localStorage.getItem("userId")?.toString() || '';
        if(data["_id"]!=null && userId!=null){
 
             this.service.NewConversation(data["_id"],userId).subscribe((data1)=>{
               if(data1=="new conversation saved"){
-                sessionStorage.setItem("showallchatpage","true");
-                sessionStorage.setItem("profilepage","false");
+                localStorage.setItem("showallchatpage","true");
+                localStorage.setItem("profilepage","false");
                 window.location.reload();
               }else if(data1=="Already Added"){
                 alert("Already Added");
-                // sessionStorage.setItem("showallchatpage","true");
-                // sessionStorage.setItem("profilepage","false");
+                // localStorage.setItem("showallchatpage","true");
+                // localStorage.setItem("profilepage","false");
                 // window.location.reload();
               }
             });
@@ -573,7 +574,7 @@ const userId = sessionStorage.getItem("userId")?.toString() || ""
 
 //   ngOnDestroy(): void { 
   
-//   let name = sessionStorage.getItem("name")?.toString() || ""
+//   let name = localStorage.getItem("name")?.toString() || ""
 //   console.log(name);
   
 //   if(name==""){
