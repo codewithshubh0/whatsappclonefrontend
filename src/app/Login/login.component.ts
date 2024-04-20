@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
       this.route.navigate(["home"])
     }
     this.getScreenSize();
+   
   }
   ngOnInit(){
     
@@ -62,6 +63,14 @@ export class LoginComponent implements OnInit {
               width:250
        })
    },1000)
+
+   
+
+   
+  }
+
+  ngAfterViewInit() {
+    this.route.navigate(['/login'])
   }
   handleLogin(response:any){
   
